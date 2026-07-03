@@ -77,11 +77,11 @@ Avviare la UI Web per iniziare a inviare pacchetti e visualizzare i risultati.
 ## 🔮 **Sviluppi Futuri**
 L'architettura estensibile permette di pianificare i seguenti aggiornamenti futuri senza dover modificare il codice core esistente:
 
-Switch Automatico (Auto-Adaptive): Transizione automatica e thread-safe tra l'algoritmo statico e l'IA senza perdita di pacchetti.
+**1. Switch Automatico (Auto-Adaptive):** Transizione automatica e thread-safe tra l'algoritmo statico e l'IA senza perdita di pacchetti.
 
-Espansione delle Strategie: Integrazione di nuove regole di filtraggio, come reti neurali profonde o regole basate sulla geolocalizzazione IP.
+**2. Espansione delle Strategie:** Integrazione di nuove regole di filtraggio, come reti neurali profonde o regole basate sulla geolocalizzazione IP.
 
-Online Learning: Addestramento continuo del modello in tempo reale sui nuovi pacchetti processati, per aumentare la precisione empirica giorno dopo giorno.
+**3. Online Learning:** Addestramento continuo del modello in tempo reale sui nuovi pacchetti processati, per aumentare la precisione empirica giorno dopo giorno.
 
 
-© 2026 — Intelligent Firewall | SAPD Project by Giuseppe Specchi
+© 2026 — **Intelligent Firewall** | SAPD Project by Giuseppe Specchi
