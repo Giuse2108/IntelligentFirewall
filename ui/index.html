@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligent Firewall Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+    <style>
+        :root {
+            --font-sans: 'Inter', system-ui, sans-serif;
+            --color-page-bg: #f3f4f6;
+            --color-background-primary: #ffffff;
+            --color-background-secondary: #f8fafc;
+            --color-text-primary: #1e293b;
+            --color-text-secondary: #64748b;
+            --color-border-secondary: #94a3b8;
+            --color-border-tertiary: #e2e8f0;
+            --border-radius-md: 8px;
+            --border-radius-lg: 12px;
+        }
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:var(--font-sans);background:var(--color-page-bg);color:var(--color-text-primary);padding:2rem 1rem}
+        .container{max-width:960px;margin:0 auto}
+
+        /* HEADER */
+        .header{padding:1.5rem 0 1rem;border-bottom:1px solid var(--color-border-tertiary);margin-bottom:1.5rem}
+        .header h1{font-size:24px;font-weight:600;display:flex;align-items:center;gap:10px}
+        .header p{font-size:14px;color:var(--color-text-secondary);margin-top:6px}
+
+        /* STATUS BAR */
+        .status-bar{display:flex;align-items:center;gap:8px;font-size:13px;padding:10px 16px;border-radius:var(--border-radius-md);margin-bottom:1.2rem;border:1px solid var(--color-border-tertiary);background:var(--color-background-primary)}
+        .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+        .dot.green{background:#16a34a} .dot.red{background:#dc2626} .dot.yellow{background:#ca8a04}
+
+        /* STRATEGY TOGGLE */
+        .strategy-bar{display:flex;align-items:center;gap:12px;background:var(--color-background-primary);border:1px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px 18px;margin-bottom:1.5rem;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+        .strategy-label{font-size:14px;font-weight:500;white-space:nowrap}
+        .toggle-wrap{display:flex;background:var(--color-background-secondary);border:1px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);overflow:hidden}
+        .toggle-btn{padding:8px 20px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--color-text-secondary);transition:all .2s}
+        .toggle-btn.active{background:#fff;color:var(--color-text-primary);box-shadow:0 0 0 1px var(--color-border-secondary) inset;border-radius:var(--border-radius-md)}
+        .strategy-desc{font-size:13px;color:var(--color-text-secondary);margin-left:auto;font-style:italic}
+
+        /* STATS */
+        .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:1.5rem}
+        .stat{background:var(--color-background-primary);border:1px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+        .stat-label{font-size:13px;color:var(--color-text-secondary);margin-bottom:6px;font-weight:500}
+        .stat-value{font-size:26px;font-weight:600}
+        .stat-value.safe{color:#0F6E56} .stat-value.danger{color:#A32D2D} .stat-value.info{color:#185FA5}
+
+        /* FORM */
+        .form-card{background:var(--color-background-primary);border:1px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+        .form-title{font-size:16px;font-weight:600;margin-bottom:1.2rem;display:flex;align-items:center;gap:8px}
+        .preset-row{display:flex;gap:8px;margin-bottom:1.2rem;flex-wrap:wrap;align-items:center}
+        .preset-btn{font-size:12px;padding:6px 14px;border:1px solid var(--color-border-tertiary);border-radius:20px;background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer;transition:all .2s;font-weight:500}
+        .preset-btn:hover{background:var(--color-border-tertiary);color:var(--color-text-primary)}
+        .form-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.2rem}
+        .field{display:flex;flex-direction:column;gap:5px}
+        .field label{font-size:11px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+        .field input{padding:8px 10px;font-size:13px;border:1px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-secondary);color:var(--color-text-primary);width:100%;transition:border .2s}
+        .field input:focus{outline:none;border-color:#185FA5;background:#fff}
+        .form-footer{display:flex;gap:12px;align-items:center;margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid var(--color-border-tertiary)}
+        .send-btn{padding:10px 24px;font-size:14px;font-weight:500;border:none;border-radius:var(--border-radius-md);background:#185FA5;color:#fff;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .2s}
+        .send-btn:hover{background:#114880} .send-btn:disabled{opacity:.6;cursor:not-allowed}
+
+        /* TABLE */
+        .table-card{background:var(--color-background-primary);border:1px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+        .table-scroll{overflow-x:auto}
+        .table-header{padding:14px 18px;font-size:15px;font-weight:600;border-bottom:1px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between;background:var(--color-background-secondary)}
+        table{width:100%;border-collapse:collapse;table-layout:fixed}
+        th{font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;padding:11px 14px;text-align:left;border-bottom:1px solid var(--color-border-tertiary)}
+        td{font-size:13px;padding:11px 14px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        tr:last-child td{border-bottom:none} tr:hover td{background:var(--color-background-secondary)}
+
+        /* BADGES */
+        .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600}
+        .badge.safe{background:#E1F5EE;color:#085041}
+        .badge.danger{background:#FCEBEB;color:#791F1F}
+        .badge.b-simple{background:#E6F1FB;color:#0C447C}
+        .badge.b-intelligent{background:#EEEDFE;color:#3C3489}
+
+        .empty{text-align:center;padding:3rem;color:var(--color-text-secondary);font-size:14px}
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="header">
+        <h1><i class="ti ti-shield-check" style="font-size:28px;color:#185FA5"></i> Intelligent Firewall</h1>
+        <p>Strategy Pattern &nbsp;·&nbsp; Decision Tree J48 (Weka) su NSL-KDD &nbsp;·&nbsp; Backend Java</p>
+    </div>
+
+    <!-- Status connessione -->
+    <div class="status-bar" id="status-bar">
+        <div class="dot yellow" id="status-dot"></div>
+        <span id="status-text">Connessione al server Java in corso…</span>
+    </div>
+
+    <!-- Strategy toggle -->
+    <div class="strategy-bar">
+        <span class="strategy-label"><i class="ti ti-adjustments-horizontal"></i> Strategia attiva:</span>
+        <div class="toggle-wrap">
+            <button class="toggle-btn active" id="btn-simple"       onclick="setStrategy('simple')">SimpleFilter</button>
+            <button class="toggle-btn"        id="btn-intelligent"  onclick="setStrategy('intelligent')">IntelligentFilter</button>
+        </div>
+        <span class="strategy-desc" id="strategy-desc">Regole statiche: duration, src_bytes, dst_bytes</span>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+        <div class="stat"><div class="stat-label">Pacchetti analizzati</div><div class="stat-value info"   id="s-total">0</div></div>
+        <div class="stat"><div class="stat-label">Sicuri</div>             <div class="stat-value safe"    id="s-safe">0</div></div>
+        <div class="stat"><div class="stat-label">Anomalie</div>           <div class="stat-value danger"  id="s-anomaly">0</div></div>
+        <div class="stat"><div class="stat-label">Tasso anomalie</div>     <div class="stat-value"         id="s-rate">—</div></div>
+    </div>
+
+    <!-- Form -->
+    <div class="form-card">
+        <div class="form-title"><i class="ti ti-package" style="color:#185FA5"></i> Inserisci pacchetto</div>
+        <div class="preset-row">
+            <span style="font-size:12px;color:var(--color-text-secondary);font-weight:500">Preset rapidi:</span>
+            <button class="preset-btn" onclick="loadPreset('normal')">Traffico normale</button>
+            <button class="preset-btn" onclick="loadPreset('suspicious')">Sospetto</button>
+            <button class="preset-btn" onclick="loadPreset('attack')">Attacco DoS</button>
+            <button class="preset-btn" onclick="loadPreset('probe')">Probe scan</button>
+        </div>
+        <div class="form-grid">
+            <div class="field"><label>duration</label>          <input type="number" id="f-duration"          value="0"    min="0"></div>
+            <div class="field"><label>src_bytes</label>         <input type="number" id="f-src_bytes"         value="181"  min="0"></div>
+            <div class="field"><label>dst_bytes</label>         <input type="number" id="f-dst_bytes"         value="5450" min="0"></div>
+            <div class="field"><label>count</label>             <input type="number" id="f-count"             value="8"    min="0"></div>
+            <div class="field"><label>srv_count</label>         <input type="number" id="f-srv_count"         value="8"    min="0"></div>
+            <div class="field"><label>serror_rate</label>       <input type="number" id="f-serror_rate"       value="0"    min="0" max="1" step="0.01"></div>
+            <div class="field"><label>rerror_rate</label>       <input type="number" id="f-rerror_rate"       value="0"    min="0" max="1" step="0.01"></div>
+            <div class="field"><label>same_srv_rate</label>     <input type="number" id="f-same_srv_rate"     value="1"    min="0" max="1" step="0.01"></div>
+            <div class="field"><label>diff_srv_rate</label>     <input type="number" id="f-diff_srv_rate"     value="0"    min="0" max="1" step="0.01"></div>
+            <div class="field"><label>dst_host_count</label>    <input type="number" id="f-dst_host_count"    value="9"    min="0"></div>
+            <div class="field"><label>dst_host_srv_count</label><input type="number" id="f-dst_host_srv_count" value="9"   min="0"></div>
+        </div>
+        <div class="form-footer">
+            <button class="send-btn" id="analyze-btn" onclick="analyzePacket()">
+                <i class="ti ti-scan" style="font-size:18px"></i> Analizza pacchetto
+            </button>
+            <span id="result-inline" style="font-size:14px;font-weight:500;color:var(--color-text-secondary)"></span>
+        </div>
+    </div>
+
+    <!-- Tabella storico -->
+    <div class="table-card">
+        <div class="table-header">
+            <span style="display:flex;align-items:center;gap:8px"><i class="ti ti-history" style="color:#185FA5"></i> Storico analisi</span>
+            <button onclick="clearLog()" style="font-size:13px;font-weight:500;color:var(--color-text-secondary);background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:4px">
+                <i class="ti ti-trash"></i> Svuota
+            </button>
+        </div>
+        <div class="table-scroll"><table style="min-width:900px">
+            <thead>
+                <tr>
+                    <th style="width:36px">#</th>
+                    <th style="width:110px">Strategia</th>
+                    <th style="width:75px">Duration</th>
+                    <th style="width:80px">Src bytes</th>
+                    <th style="width:80px">Dst bytes</th>
+                    <th style="width:55px">Count</th>
+                    <th style="width:65px">Srv count</th>
+                    <th style="width:70px">Serror</th>
+                    <th style="width:70px">Rerror</th>
+                    <th style="width:80px">Same srv</th>
+                    <th style="width:70px">Diff srv</th>
+                    <th style="width:80px">Dst host</th>
+                    <th style="width:80px">Dst srv</th>
+                    <th style="width:250px">Risultato</th>
+                    <th style="width:75px">Fiducia</th>
+                </tr>
+            </thead>
+            <tbody id="log-body">
+                <tr><td colspan="15" class="empty">Nessun pacchetto analizzato. Avvia un'analisi per popolare lo storico.</td></tr>
+            </tbody>
+        </table></div>
+    </div>
+
+</div>
+<script>
+// -------------------------------------------------------
+// Configurazione — backend Java sulla porta 8080
+// Se la pagina è servita da Java stesso, usa URL relativo
+// -------------------------------------------------------
+const SERVER = (location.protocol === 'file:') ? 'http://localhost:8080' : '';
+
+let strategy = 'simple';
+let packets  = [];
+let counter  = 0;
+
+// -------------------------------------------------------
+// Preset pacchetti (valori reali NSL-KDD)
+// -------------------------------------------------------
+const presets = {
+    normal:    {duration:0,   src_bytes:181,  dst_bytes:5450, count:8,   srv_count:8,   serror_rate:0,    rerror_rate:0,    same_srv_rate:1,    diff_srv_rate:0,    dst_host_count:9,   dst_host_srv_count:9},
+    suspicious:{duration:299, src_bytes:1991, dst_bytes:1212, count:25,  srv_count:8,   serror_rate:0.08, rerror_rate:0,    same_srv_rate:0.32, diff_srv_rate:0.07, dst_host_count:54,  dst_host_srv_count:22},
+    attack:    {duration:0,   src_bytes:0,    dst_bytes:0,    count:511, srv_count:511, serror_rate:1,    rerror_rate:0,    same_srv_rate:1,    diff_srv_rate:0,    dst_host_count:255, dst_host_srv_count:255},
+    probe:     {duration:0,   src_bytes:28,   dst_bytes:0,    count:255, srv_count:1,   serror_rate:0,    rerror_rate:0.67, same_srv_rate:0,    diff_srv_rate:1,    dst_host_count:255, dst_host_srv_count:1}
+};
+
+// -------------------------------------------------------
+// Controllo stato server all'avvio
+// -------------------------------------------------------
+async function checkStatus() {
+    const dot  = document.getElementById('status-dot');
+    const text = document.getElementById('status-text');
+    try {
+        const res  = await fetch(SERVER + '/status');
+        const json = await res.json();
+        if (json.model_ready) {
+            dot.className  = 'dot green';
+            text.textContent = 'Server Java connesso · Modello ML pronto';
+        } else {
+            dot.className  = 'dot yellow';
+            text.textContent = 'Server Java connesso · Modello ML in addestramento…';
+            setTimeout(checkStatus, 3000); // ricontrolla
+        }
+    } catch {
+        dot.className  = 'dot red';
+        text.textContent = 'Server Java non raggiungibile — avvia FirewallServer.java (porta 8080)';
+        setTimeout(checkStatus, 5000);
+    }
+}
+
+// -------------------------------------------------------
+// Toggle strategia
+// -------------------------------------------------------
+function setStrategy(s) {
+    strategy = s;
+    document.getElementById('btn-simple').classList.toggle('active',      s === 'simple');
+    document.getElementById('btn-intelligent').classList.toggle('active', s === 'intelligent');
+    document.getElementById('strategy-desc').textContent = s === 'simple'
+        ? 'Regole statiche: duration, src_bytes, dst_bytes'
+        : 'Modello ML: Decision Tree J48 su 11 feature NSL-KDD';
+}
+
+// -------------------------------------------------------
+// Carica preset nel form
+// -------------------------------------------------------
+function loadPreset(name) {
+    const p = presets[name];
+    Object.entries(p).forEach(([k, v]) => {
+        const el = document.getElementById('f-' + k);
+        if (el) el.value = v;
+    });
+}
+
+// -------------------------------------------------------
+// Leggi valori dal form
+// -------------------------------------------------------
+function getFormData() {
+    const fields = ['duration','src_bytes','dst_bytes','count','srv_count',
+                    'serror_rate','rerror_rate','same_srv_rate','diff_srv_rate',
+                    'dst_host_count','dst_host_srv_count'];
+    const d = {};
+    fields.forEach(f => { d[f] = parseFloat(document.getElementById('f-' + f).value) || 0; });
+    return d;
+}
+
+// -------------------------------------------------------
+// Analisi pacchetto
+// -------------------------------------------------------
+async function analyzePacket() {
+    const btn  = document.getElementById('analyze-btn');
+    const info = document.getElementById('result-inline');
+    btn.disabled      = true;
+    info.textContent  = 'Analisi in corso…';
+    info.style.color  = 'var(--color-text-secondary)';
+
+    const data     = getFormData();
+    const endpoint = strategy === 'simple' ? '/simple_analyze' : '/intelligent_analyze';
+
+    try {
+        const res  = await fetch(SERVER + endpoint, {
+            method:  'POST',
+            headers: {'Content-Type': 'application/json'},
+            body:    JSON.stringify(data)
+        });
+        const json = await res.json();
+        counter++;
+
+        const row = {
+            id:              counter,
+            strategy,
+            duration:        data.duration,
+            src_bytes:       data.src_bytes,
+            dst_bytes:       data.dst_bytes,
+            count:           data.count,
+            srv_count:       data.srv_count,
+            serror_rate:     data.serror_rate,
+            rerror_rate:     data.rerror_rate,
+            same_srv_rate:   data.same_srv_rate,
+            diff_srv_rate:   data.diff_srv_rate,
+            dst_host_count:  data.dst_host_count,
+            dst_host_srv_count: data.dst_host_srv_count,
+            attack:          json.attack,
+            label:           json.label,
+            confidence:      json.confidence
+        };
+        packets.unshift(row);
+        updateStats();
+        renderTable();
+
+        info.textContent = row.attack ? '🔴 Anomalia rilevata' : '🟢 Pacchetto sicuro';
+        info.style.color = row.attack ? '#A32D2D' : '#0F6E56';
+
+    } catch (e) {
+        info.textContent = 'Errore: server non raggiungibile (localhost:8080)';
+        info.style.color = '#A32D2D';
+    }
+    btn.disabled = false;
+}
+
+// -------------------------------------------------------
+// Aggiorna statistiche
+// -------------------------------------------------------
+function updateStats() {
+    const total     = packets.length;
+    const anomalies = packets.filter(p => p.attack).length;
+    document.getElementById('s-total').textContent   = total;
+    document.getElementById('s-safe').textContent    = total - anomalies;
+    document.getElementById('s-anomaly').textContent = anomalies;
+    document.getElementById('s-rate').textContent    = total > 0 ? Math.round(anomalies / total * 100) + '%' : '—';
+}
+
+// -------------------------------------------------------
+// Renderizza tabella
+// -------------------------------------------------------
+function renderTable() {
+    const tbody = document.getElementById('log-body');
+    if (packets.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="15" class="empty">Nessun pacchetto analizzato ancora.</td></tr>';
+        return;
+    }
+    const confDisplay = p => {
+        if (p.confidence == null) return '—';
+        return p.attack
+            ? p.confidence.toFixed(1) + '%'
+            : (100 - p.confidence).toFixed(1) + '%';
+    };
+    tbody.innerHTML = packets.map(p => `
+        <tr style="cursor:pointer" onclick="toggleDetail(${p.id})">
+            <td style="color:var(--color-text-secondary);font-weight:500">${p.id}</td>
+            <td><span class="badge b-${p.strategy}">${p.strategy === 'simple' ? 'Simple' : 'Intelligent'}</span></td>
+            <td>${p.duration}</td>
+            <td>${p.src_bytes.toLocaleString()}</td>
+            <td>${p.dst_bytes.toLocaleString()}</td>
+            <td>${p.count}</td>
+            <td>${p.srv_count}</td>
+            <td>${p.serror_rate}</td>
+            <td>${p.rerror_rate}</td>
+            <td>${p.same_srv_rate}</td>
+            <td>${p.diff_srv_rate}</td>
+            <td>${p.dst_host_count}</td>
+            <td>${p.dst_host_srv_count}</td>
+            <td><span class="badge ${p.attack ? 'danger' : 'safe'}">${p.attack ? '🚨 ' + (p.label || 'Anomalia') : '✅ Sicuro'}</span></td>
+            <td>${confDisplay(p)}</td>
+        </tr>
+    `).join('');
+}
+
+// -------------------------------------------------------
+// Svuota log
+// -------------------------------------------------------
+function clearLog() {
+    packets = []; counter = 0;
+    updateStats(); renderTable();
+    const info = document.getElementById('result-inline');
+    info.textContent = ''; info.style.color = 'var(--color-text-secondary)';
+}
+
+// Avvio
+checkStatus();
+</script>
+</body>
+</html>

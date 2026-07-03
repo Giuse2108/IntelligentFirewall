@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Compila Firewall",
+      "type": "shell",
+      "command": "javac -cp \"lib/weka.jar\" firewall/*.java strategy/*.java",
+      "group": { "kind": "build", "isDefault": true }
+    },
+    {
+      "label": "Avvia FirewallServer",
+      "type": "shell",
+      "command": "java -cp \".:lib/weka.jar\" firewall.FirewallServer",
+      "dependsOn": "Compila Firewall"
+    }
+  ]
+}
