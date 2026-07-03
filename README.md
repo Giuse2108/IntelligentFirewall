@@ -62,9 +62,12 @@ Se si desidera compilare ed eseguire il progetto manualmente da terminale (assic
 **1. Compilazione:**
 ```bash
 javac -cp ".;lib/weka.jar" firewall/*.java strategy/*.java
+```
 
 **2. Esecuzione del server:**
+```bash
 java -cp ".;lib/weka.jar" firewall.FirewallServer
+```
 
 **3. Entrare nella dashboard:**
 Avviare la UI Web per iniziare a inviare pacchetti e visualizzare i risultati.
