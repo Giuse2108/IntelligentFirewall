@@ -57,20 +57,9 @@ Assicurarsi che il file `weka.jar` (presente nella cartella `lib/`) sia incluso 
 
 ## 🚀 **Avvio rapido (simulazione locale)**
 
-Se si desidera compilare ed eseguire il progetto manualmente da terminale (assicurandosi di essere nella cartella principale del progetto):
+All'interno del file tasks.json sono presenti i comandi per compilare ed eseguire nel terminale i file del server
 
-**1. Compilazione:**
-```bash
-javac -cp ".;lib/weka.jar" firewall/*.java strategy/*.java
-```
-
-**2. Esecuzione del server:**
-```bash
-java -cp ".;lib/weka.jar" firewall.FirewallServer
-```
-
-**3. Entrare nella dashboard:**
-Avviare la UI Web per iniziare a inviare pacchetti e visualizzare i risultati.
+Successivamente avviare la UI Web per iniziare a inviare pacchetti e visualizzare i risultati.
 
 ---
 
