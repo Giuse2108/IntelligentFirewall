@@ -6,7 +6,7 @@ Il sistema separa le logiche di analisi dal motore del firewall, ottimizzando le
 
 ---
 
-## 🚀 **Caratteristiche Principali**
+## 🔧 **Caratteristiche Principali**
 
 * **Filtraggio Intelligente:** Il sistema adatta dinamicamente le regole per bloccare le minacce in tempo reale.
 * **Sicurezza Proattiva:** Previene attacchi zero-day individuando comportamenti anomali prima che colpiscano il sistema.
