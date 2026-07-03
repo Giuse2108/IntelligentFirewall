@@ -55,6 +55,16 @@ Assicurarsi che il file `weka.jar` (presente nella cartella `lib/`) sia incluso 
 * Su **VS Code**: la libreria dovrebbe essere rilevata automaticamente nei *Referenced Libraries*.
 * Su **Eclipse / IntelliJ**: fare tasto destro sul file `.jar` e selezionare *Add to Build Path* / *Add as Library*.
 
+---
+
+## 🧠 **Dataset e Modello Pre-addestrato**
+
+All'interno della root del progetto sono presenti due file fondamentali per il funzionamento del modulo di Intelligenza Artificiale:
+* **`firewall_model.ser`**: È il modello di Machine Learning (Decision Tree J48) pre-addestrato e serializzato. Il server carica questo file all'avvio, abbattendo drasticamente i tempi di inizializzazione e permettendo un'analisi immediata del traffico.
+* **`KDDTrain+.txt`**: È il dataset originale contenente il traffico di rete (normale e anomalie/attacchi) utilizzato per addestrare il modello. Rimane a disposizione nel repository per permettere futuri ri-addestramenti o per implementazioni di *Online Learning*.
+
+---
+
 ## 🚀 **Avvio rapido (simulazione locale)**
 
 All'interno del file tasks.json sono presenti i comandi per compilare ed eseguire nel terminale i file del server
