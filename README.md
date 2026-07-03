@@ -64,7 +64,7 @@ Se si desidera compilare ed eseguire il progetto manualmente da terminale (assic
 javac -cp ".;lib/weka.jar" firewall/*.java strategy/*.java
 
 **2. Esecuzione del server:**
-Avviare la classe principale FirewallServer per mettere il backend in ascolto sulla porta 8080(java -cp ".;lib/weka.jar" firewall.FirewallServer).
+java -cp ".;lib/weka.jar" firewall.FirewallServer
 
 **3. Entrare nella dashboard:**
 Avviare la UI Web per iniziare a inviare pacchetti e visualizzare i risultati.
